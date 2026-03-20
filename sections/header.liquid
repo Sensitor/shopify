@@ -1,0 +1,78 @@
+{% comment %} Header Section {% endcomment %}
+<header class="site-header">
+  <div class="header-announcement">
+    <div class="container">
+      <p>{{ section.settings.announcement_text }}</p>
+    </div>
+  </div>
+
+  <div class="header-main">
+    <div class="container header-inner">
+      <a href="/" class="header-logo">
+        {% if section.settings.logo %}
+          <img src="{{ section.settings.logo | image_url: width: 200 }}" alt="{{ shop.name }}" height="40">
+        {% else %}
+          <span class="logo-text">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/><path d="M8 12h8M12 8v8"/><circle cx="12" cy="12" r="3"/></svg>
+            {{ shop.name }}
+          </span>
+        {% endif %}
+      </a>
+
+      <nav class="header-nav" id="main-nav">
+        {% for link in linklists.main-menu.links %}
+          {% if link.links.size > 0 %}
+            <div class="nav-dropdown">
+              <a href="{{ link.url }}" class="nav-link nav-link--has-dropdown">
+                {{ link.title }}
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor"><path d="M2 4l4 4 4-4"/></svg>
+              </a>
+              <div class="dropdown-menu">
+                {% for child_link in link.links %}
+                  <a href="{{ child_link.url }}" class="dropdown-link">{{ child_link.title }}</a>
+                {% endfor %}
+              </div>
+            </div>
+          {% else %}
+            <a href="{{ link.url }}" class="nav-link">{{ link.title }}</a>
+          {% endif %}
+        {% endfor %}
+      </nav>
+
+      <div class="header-actions">
+        <a href="/search" class="header-icon" aria-label="Rechercher">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        </a>
+        <a href="/account" class="header-icon" aria-label="Mon compte">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </a>
+        <a href="/cart" class="header-icon header-cart" aria-label="Panier">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+          <span class="cart-count">{{ cart.item_count }}</span>
+        </a>
+        <button class="mobile-menu-toggle" id="mobile-menu-toggle" aria-label="Menu">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</header>
+
+{% schema %}
+{
+  "name": "En-tête",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Logo"
+    },
+    {
+      "type": "text",
+      "id": "announcement_text",
+      "label": "Texte d'annonce",
+      "default": "🌬️ Livraison gratuite dès 500€ d'achat | Installation professionnelle disponible"
+    }
+  ]
+}
+{% endschema %}

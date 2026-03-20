@@ -1,0 +1,21 @@
+{% comment %} Price Snippet - Expects: product or variant {% endcomment %}
+{%- if variant -%}
+  {%- assign current_price = variant.price -%}
+  {%- assign compare_price = variant.compare_at_price -%}
+{%- else -%}
+  {%- assign current_price = product.price -%}
+  {%- assign compare_price = product.compare_at_price -%}
+{%- endif -%}
+
+<div class="product-price">
+  {%- if product.price_varies -%}
+    <span class="price-from">A partir de</span>
+  {%- endif -%}
+
+  {%- if compare_price > current_price -%}
+    <span class="price-compare">{{ compare_price | money }}</span>
+    <span class="price-current price-sale">{{ current_price | money }}</span>
+  {%- else -%}
+    <span class="price-current">{{ current_price | money }}</span>
+  {%- endif -%}
+</div>

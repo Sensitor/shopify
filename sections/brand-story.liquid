@@ -1,0 +1,108 @@
+{% comment %} Brand Story Section {% endcomment %}
+<section class="section-padding">
+  <div class="container">
+    <div class="brand-story-grid">
+      <div class="brand-story-image">
+        {% if section.settings.image %}
+          <img
+            src="{{ section.settings.image | image_url: width: 800 }}"
+            alt="{{ section.settings.image.alt | default: section.settings.heading }}"
+            loading="lazy"
+            width="800"
+            height="600"
+          >
+        {% else %}
+          <div class="placeholder-bg">
+            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+          </div>
+        {% endif %}
+      </div>
+
+      <div class="brand-story-content">
+        <h2>{{ section.settings.heading }}</h2>
+        <div>{{ section.settings.text }}</div>
+
+        {% if section.settings.button_text != blank %}
+          <a href="{{ section.settings.button_link }}" class="btn btn-primary" style="margin-top: 24px;">
+            {{ section.settings.button_text }}
+          </a>
+        {% endif %}
+
+        <div class="brand-story-stats">
+          {% for block in section.blocks %}
+            <div class="stat-item" {{ block.shopify_attributes }}>
+              <div class="stat-number">{{ block.settings.number }}</div>
+              <div class="stat-label">{{ block.settings.label }}</div>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Histoire de marque",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Titre",
+      "default": "Pourquoi Choisir ClimaConfort ?"
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "Texte",
+      "default": "<p>Depuis plus de 15 ans, ClimaConfort accompagne les particuliers et les professionnels dans leurs projets de climatisation et de chauffage. Notre equipe de techniciens certifies vous garantit un service d'excellence, de la selection du materiel a l'installation et la maintenance.</p><p>Nous selectionnons uniquement des equipements de marques reconnues, offrant les meilleures performances energetiques et un confort optimal en toutes saisons.</p>"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Texte du bouton",
+      "default": "En savoir plus"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Lien du bouton"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "stat",
+      "name": "Statistique",
+      "settings": [
+        {
+          "type": "text",
+          "id": "number",
+          "label": "Nombre",
+          "default": "15+"
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label",
+          "default": "Annees d'experience"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Histoire de marque",
+      "blocks": [
+        { "type": "stat", "settings": { "number": "15+", "label": "Annees d'experience" } },
+        { "type": "stat", "settings": { "number": "10 000+", "label": "Clients satisfaits" } },
+        { "type": "stat", "settings": { "number": "98%", "label": "Taux de satisfaction" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

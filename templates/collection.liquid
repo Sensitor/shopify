@@ -1,0 +1,65 @@
+{% comment %} Collection Template {% endcomment %}
+<div class="collection-page section-padding">
+  <div class="container">
+    <div class="collection-header">
+      <nav class="breadcrumb">
+        <a href="/">Accueil</a>
+        <span>/</span>
+        <span>{{ collection.title | default: 'Tous les produits' }}</span>
+      </nav>
+      <h1 class="page-title">{{ collection.title | default: 'Tous les produits' }}</h1>
+      {% if collection.description != blank %}
+        <div class="collection-description">{{ collection.description }}</div>
+      {% endif %}
+    </div>
+
+    <div class="collection-toolbar">
+      <p class="results-count">{{ collection.products_count }} produit{% if collection.products_count > 1 %}s{% endif %}</p>
+      <div class="collection-sort">
+        <label for="sort-by">Trier par :</label>
+        <select id="sort-by" onchange="window.location.href = this.value;">
+          {% for option in collection.sort_options %}
+            <option value="{{ option.url }}" {% if option.value == collection.sort_by %}selected{% endif %}>
+              {{ option.name }}
+            </option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+
+    <div class="products-grid">
+      {% for product in collection.products %}
+        {% render 'product-card', product: product %}
+      {% else %}
+        <div class="empty-collection">
+          <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="var(--color-text-light)" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+          <h2>Aucun produit trouvé</h2>
+          <p>Essayez de modifier vos filtres ou explorez nos autres collections.</p>
+          <a href="/collections/all" class="btn btn-primary">Voir tous les produits</a>
+        </div>
+      {% endfor %}
+    </div>
+
+    {% if paginate.pages > 1 %}
+      {% paginate collection.products by 12 %}
+        <div class="pagination">
+          {% if paginate.previous %}
+            <a href="{{ paginate.previous.url }}" class="pagination-btn">← Précédent</a>
+          {% endif %}
+
+          {% for part in paginate.parts %}
+            {% if part.is_link %}
+              <a href="{{ part.url }}" class="pagination-num">{{ part.title }}</a>
+            {% else %}
+              <span class="pagination-num pagination-current">{{ part.title }}</span>
+            {% endif %}
+          {% endfor %}
+
+          {% if paginate.next %}
+            <a href="{{ paginate.next.url }}" class="pagination-btn">Suivant →</a>
+          {% endif %}
+        </div>
+      {% endpaginate %}
+    {% endif %}
+  </div>
+</div>

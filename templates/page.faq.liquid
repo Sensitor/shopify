@@ -1,0 +1,198 @@
+{% comment %} FAQ Page Template {% endcomment %}
+<div class="faq-page section-padding">
+  <div class="container container-narrow">
+    <nav class="breadcrumb">
+      <a href="/">Accueil</a>
+      <span>/</span>
+      <span>FAQ</span>
+    </nav>
+
+    <div class="section-header">
+      <h1 class="page-title">Questions Fréquentes</h1>
+      <p class="section-subtitle">Retrouvez les réponses aux questions les plus posées par nos clients</p>
+    </div>
+
+    {% if page.content != blank %}
+      <div class="rte" style="margin-bottom: 2rem;">{{ page.content }}</div>
+    {% endif %}
+
+    <div class="faq-categories">
+
+      <div class="faq-category">
+        <h2 class="faq-category-title">🛒 Commandes & Livraison</h2>
+        <div class="faq-list">
+          <details class="faq-item">
+            <summary class="faq-question">Quels sont les délais de livraison ?</summary>
+            <div class="faq-answer">
+              <p>Nos délais de livraison sont les suivants :</p>
+              <ul>
+                <li><strong>Livraison standard :</strong> 4 à 6 jours ouvrés (9,90€)</li>
+                <li><strong>Livraison express :</strong> 1 à 2 jours ouvrés (19,90€)</li>
+                <li><strong>Livraison gratuite</strong> pour toute commande supérieure à 500€</li>
+              </ul>
+              <p>Les équipements lourds (pompes à chaleur, unités extérieures) sont livrés par transporteur spécialisé sous 5 à 8 jours ouvrés.</p>
+            </div>
+          </details>
+
+          <details class="faq-item">
+            <summary class="faq-question">Comment suivre ma commande ?</summary>
+            <div class="faq-answer">
+              <p>Dès l'expédition de votre commande, vous recevez un email avec un numéro de suivi. Vous pouvez également suivre votre commande depuis votre espace client dans la section "Mes commandes".</p>
+            </div>
+          </details>
+
+          <details class="faq-item">
+            <summary class="faq-question">Livrez-vous en dehors de la France métropolitaine ?</summary>
+            <div class="faq-answer">
+              <p>Oui, nous livrons en Belgique, Suisse, Luxembourg et dans les DOM-TOM. Les frais et délais varient selon la destination. Contactez-nous pour un devis personnalisé pour les livraisons hors France métropolitaine.</p>
+            </div>
+          </details>
+        </div>
+      </div>
+
+      <div class="faq-category">
+        <h2 class="faq-category-title">❄️ Produits & Installation</h2>
+        <div class="faq-list">
+          <details class="faq-item">
+            <summary class="faq-question">Comment choisir la bonne puissance de climatiseur ?</summary>
+            <div class="faq-answer">
+              <p>La puissance nécessaire dépend de plusieurs facteurs :</p>
+              <ul>
+                <li><strong>Surface de la pièce :</strong> comptez environ 100W par m² pour une pièce standard</li>
+                <li><strong>Exposition :</strong> ajoutez 20% pour une pièce plein sud</li>
+                <li><strong>Isolation :</strong> une mauvaise isolation nécessite plus de puissance</li>
+                <li><strong>Hauteur sous plafond :</strong> au-delà de 2,50m, augmentez la puissance</li>
+              </ul>
+              <p>En règle générale :</p>
+              <ul>
+                <li>Pièce de 15-20m² : 2000-2500W (7000-9000 BTU)</li>
+                <li>Pièce de 20-30m² : 2500-3500W (9000-12000 BTU)</li>
+                <li>Pièce de 30-45m² : 3500-5000W (12000-18000 BTU)</li>
+              </ul>
+              <p>Notre équipe est disponible pour vous aider à déterminer la puissance idéale. N'hésitez pas à nous contacter !</p>
+            </div>
+          </details>
+
+          <details class="faq-item">
+            <summary class="faq-question">Proposez-vous l'installation des climatiseurs ?</summary>
+            <div class="faq-answer">
+              <p>Oui ! Nous disposons d'un réseau de techniciens certifiés dans toute la France. L'installation comprend :</p>
+              <ul>
+                <li>Visite technique préalable</li>
+                <li>Installation complète de l'unité intérieure et extérieure</li>
+                <li>Mise en service et test de fonctionnement</li>
+                <li>Explication du fonctionnement et de l'entretien</li>
+              </ul>
+              <p>Le tarif d'installation varie selon le type d'équipement et la configuration de votre logement. Demandez un devis gratuit !</p>
+            </div>
+          </details>
+
+          <details class="faq-item">
+            <summary class="faq-question">Quelle est la différence entre un climatiseur et une pompe à chaleur ?</summary>
+            <div class="faq-answer">
+              <p>Un <strong>climatiseur</strong> refroidit uniquement l'air. Une <strong>pompe à chaleur (PAC)</strong> est réversible : elle peut chauffer en hiver et rafraîchir en été. La PAC est généralement plus économique à l'usage car elle utilise les calories de l'air extérieur pour chauffer.</p>
+              <p>Nos climatiseurs réversibles combinent les deux fonctions et sont idéaux pour un confort toute l'année.</p>
+            </div>
+          </details>
+
+          <details class="faq-item">
+            <summary class="faq-question">Comment entretenir mon climatiseur ?</summary>
+            <div class="faq-answer">
+              <p>Pour maintenir les performances de votre climatiseur :</p>
+              <ul>
+                <li><strong>Tous les 15 jours :</strong> Nettoyez les filtres à l'eau tiède</li>
+                <li><strong>Tous les ans :</strong> Faites réaliser un entretien professionnel</li>
+                <li><strong>Régulièrement :</strong> Vérifiez que les grilles ne sont pas obstruées</li>
+              </ul>
+              <p>Nous proposons des contrats d'entretien annuels à partir de 149€/an.</p>
+            </div>
+          </details>
+        </div>
+      </div>
+
+      <div class="faq-category">
+        <h2 class="faq-category-title">💳 Paiement & Garantie</h2>
+        <div class="faq-list">
+          <details class="faq-item">
+            <summary class="faq-question">Quels moyens de paiement acceptez-vous ?</summary>
+            <div class="faq-answer">
+              <p>Nous acceptons les moyens de paiement suivants :</p>
+              <ul>
+                <li>Carte bancaire (Visa, Mastercard, American Express)</li>
+                <li>PayPal</li>
+                <li>Virement bancaire</li>
+                <li>Paiement en 3 ou 4 fois sans frais (via Alma) pour les commandes de 100€ à 3000€</li>
+              </ul>
+              <p>Tous les paiements sont sécurisés par un cryptage SSL 256 bits.</p>
+            </div>
+          </details>
+
+          <details class="faq-item">
+            <summary class="faq-question">Quelle est la durée de la garantie ?</summary>
+            <div class="faq-answer">
+              <p>Tous nos produits bénéficient d'une <strong>garantie de 5 ans</strong> pièces et main d'œuvre. Cette garantie couvre les défauts de fabrication et les pannes survenant dans des conditions normales d'utilisation.</p>
+              <p>En cas de panne, contactez notre SAV qui organisera la réparation ou le remplacement de votre équipement.</p>
+            </div>
+          </details>
+
+          <details class="faq-item">
+            <summary class="faq-question">Comment retourner un produit ?</summary>
+            <div class="faq-answer">
+              <p>Vous disposez de <strong>30 jours</strong> après réception pour retourner un produit :</p>
+              <ol>
+                <li>Connectez-vous à votre espace client</li>
+                <li>Sélectionnez la commande concernée et cliquez sur "Demander un retour"</li>
+                <li>Imprimez l'étiquette de retour prépayée</li>
+                <li>Emballez le produit dans son emballage d'origine</li>
+                <li>Déposez le colis en point relais ou programmez un enlèvement</li>
+              </ol>
+              <p>Le remboursement est effectué sous 14 jours après réception et vérification du produit retourné.</p>
+            </div>
+          </details>
+        </div>
+      </div>
+
+      <div class="faq-category">
+        <h2 class="faq-category-title">🌿 Énergie & Environnement</h2>
+        <div class="faq-list">
+          <details class="faq-item">
+            <summary class="faq-question">Quelles sont les aides financières pour l'installation d'une pompe à chaleur ?</summary>
+            <div class="faq-answer">
+              <p>Plusieurs aides sont disponibles pour l'installation d'une pompe à chaleur :</p>
+              <ul>
+                <li><strong>MaPrimeRénov' :</strong> jusqu'à 5 000€ selon vos revenus</li>
+                <li><strong>CEE (Certificats d'Économie d'Énergie) :</strong> jusqu'à 4 000€</li>
+                <li><strong>TVA réduite à 5,5%</strong> pour les travaux de rénovation énergétique</li>
+                <li><strong>Éco-PTZ :</strong> prêt à taux zéro jusqu'à 50 000€</li>
+              </ul>
+              <p>Notre équipe peut vous accompagner dans vos démarches administratives.</p>
+            </div>
+          </details>
+
+          <details class="faq-item">
+            <summary class="faq-question">Quel est le coût de fonctionnement d'un climatiseur ?</summary>
+            <div class="faq-answer">
+              <p>Le coût de fonctionnement dépend de la classe énergétique et de l'utilisation :</p>
+              <ul>
+                <li><strong>Classe A+++ :</strong> environ 15-25€/mois en utilisation intensive</li>
+                <li><strong>Classe A++ :</strong> environ 25-40€/mois</li>
+                <li><strong>Classe A+ :</strong> environ 35-55€/mois</li>
+              </ul>
+              <p>Nos appareils de classe A+++ consomment jusqu'à 40% d'énergie en moins que les modèles de classe A. C'est un investissement qui se rentabilise rapidement !</p>
+            </div>
+          </details>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="faq-contact-cta">
+      <h2>Vous n'avez pas trouvé votre réponse ?</h2>
+      <p>Notre équipe d'experts est à votre disposition pour répondre à toutes vos questions.</p>
+      <div class="faq-contact-actions">
+        <a href="/pages/contact" class="btn btn-primary">Nous contacter</a>
+        <a href="tel:0123456789" class="btn btn-outline">📞 01 23 45 67 89</a>
+      </div>
+    </div>
+  </div>
+</div>

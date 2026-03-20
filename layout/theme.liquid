@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="{{ request.locale.iso_code | default: 'fr' }}">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <title>
+    {%- if page_title -%}
+      {{ page_title }} – {{ shop.name }}
+    {%- else -%}
+      {{ shop.name }}
+    {%- endif -%}
+  </title>
+
+  {% if page_description %}
+    <meta name="description" content="{{ page_description | escape }}">
+  {% endif %}
+
+  {% render 'meta-tags' %}
+
+  <link rel="canonical" href="{{ canonical_url }}">
+
+  {{ content_for_header }}
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  {{ 'styles.css' | asset_url | stylesheet_tag }}
+
+  <style>
+    :root {
+      --color-primary: {{ settings.color_primary | default: '#0066CC' }};
+      --color-primary-dark: {% assign c = settings.color_primary | default: '#004C99' %}{{ c | color_darken: 15 | default: '#004C99' }};
+      --color-secondary: {{ settings.color_secondary | default: '#00B4D8' }};
+      --color-accent: {{ settings.color_accent | default: '#FF6B35' }};
+      --color-bg: {{ settings.color_background | default: '#FFFFFF' }};
+      --color-bg-alt: #F4F7FA;
+      --color-text: {{ settings.color_text | default: '#1A1A2E' }};
+      --color-text-light: #6B7280;
+      --color-border: #E5E7EB;
+      --color-success: #10B981;
+      --color-white: #FFFFFF;
+      --font-main: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --max-width: 1200px;
+      --radius: 12px;
+      --shadow: 0 2px 8px rgba(0,0,0,0.08);
+      --shadow-lg: 0 8px 32px rgba(0,0,0,0.12);
+      --transition: all 0.3s ease;
+    }
+  </style>
+</head>
+<body class="template-{{ template.name }}">
+
+  <a href="#main-content" class="visually-hidden">{{ 'general.accessibility.skip_to_content' | t }}</a>
+
+  {% section 'header' %}
+
+  <main id="main-content" role="main">
+    {{ content_for_layout }}
+  </main>
+
+  {% section 'footer' %}
+
+  {{ 'script.js' | asset_url | script_tag }}
+</body>
+</html>

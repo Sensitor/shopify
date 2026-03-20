@@ -1,0 +1,29 @@
+{% comment %} Customer Login Template {% endcomment %}
+<div class="auth-page section-padding">
+  <div class="container container-xs">
+    <h1 class="page-title" style="text-align:center;">Connexion</h1>
+
+    {% form 'customer_login' %}
+      {% if form.errors %}
+        <div class="form-errors">{{ form.errors | default_errors }}</div>
+      {% endif %}
+
+      <div class="form-group">
+        <label for="customer-email">Email</label>
+        <input type="email" id="customer-email" name="customer[email]" required placeholder="votre@email.com" autocomplete="email">
+      </div>
+
+      <div class="form-group">
+        <label for="customer-password">Mot de passe</label>
+        <input type="password" id="customer-password" name="customer[password]" required placeholder="Votre mot de passe" autocomplete="current-password">
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-lg btn-full">Se connecter</button>
+
+      <div class="auth-links">
+        <a href="/account/register">Créer un compte</a>
+        <a href="#recover">Mot de passe oublié ?</a>
+      </div>
+    {% endform %}
+  </div>
+</div>

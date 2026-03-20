@@ -1,0 +1,124 @@
+{% comment %} Contact Form Section {% endcomment %}
+<section class="contact-section">
+  <div class="container">
+    <div class="section-header">
+      <h2>{{ section.settings.heading }}</h2>
+      <p>{{ section.settings.subtext }}</p>
+    </div>
+
+    <div class="contact-grid">
+      <div class="contact-cards">
+        {% for block in section.blocks %}
+          <div class="contact-card" {{ block.shopify_attributes }}>
+            <span class="contact-card-icon">{{ block.settings.icon }}</span>
+            <div>
+              <h4>{{ block.settings.title }}</h4>
+              <p>{{ block.settings.text }}</p>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+
+      <div>
+        {% form 'contact', class: 'contact-form' %}
+          {% if form.posted_successfully? %}
+            <p class="form-success" style="color: var(--color-success); font-weight: 600; margin-bottom: 16px;">
+              Merci pour votre message ! Nous vous repondrons dans les plus brefs delais.
+            </p>
+          {% endif %}
+
+          {% if form.errors %}
+            <div class="form-errors" style="color: var(--color-accent); margin-bottom: 16px;">
+              {{ form.errors | default_errors }}
+            </div>
+          {% endif %}
+
+          <div class="form-group">
+            <label for="contact-name">Nom complet</label>
+            <input type="text" id="contact-name" name="contact[name]" required>
+          </div>
+          <div class="form-group">
+            <label for="contact-email">Email</label>
+            <input type="email" id="contact-email" name="contact[email]" required>
+          </div>
+          <div class="form-group">
+            <label for="contact-phone">Telephone</label>
+            <input type="tel" id="contact-phone" name="contact[phone]">
+          </div>
+          <div class="form-group">
+            <label for="contact-subject">Sujet</label>
+            <select id="contact-subject" name="contact[subject]">
+              <option value="Demande de devis">Demande de devis</option>
+              <option value="Question technique">Question technique</option>
+              <option value="SAV">Service apres-vente</option>
+              <option value="Autre">Autre</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="contact-message">Message</label>
+            <textarea id="contact-message" name="contact[body]" rows="5" required></textarea>
+          </div>
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary btn-lg" style="width: 100%;">Envoyer</button>
+          </div>
+        {% endform %}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Formulaire de contact",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Titre",
+      "default": "Contactez-Nous"
+    },
+    {
+      "type": "text",
+      "id": "subtext",
+      "label": "Sous-titre",
+      "default": "Notre equipe est a votre disposition pour repondre a toutes vos questions."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "info_card",
+      "name": "Carte info",
+      "settings": [
+        {
+          "type": "text",
+          "id": "icon",
+          "label": "Icone (emoji)",
+          "default": "📞"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Titre",
+          "default": "Telephone"
+        },
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Texte",
+          "default": "01 23 45 67 89"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Formulaire de contact",
+      "blocks": [
+        { "type": "info_card", "settings": { "icon": "📞", "title": "Telephone", "text": "01 23 45 67 89\nLun-Sam: 9h-18h" } },
+        { "type": "info_card", "settings": { "icon": "✉️", "title": "Email", "text": "contact@climaconfort.fr" } },
+        { "type": "info_card", "settings": { "icon": "📍", "title": "Showroom", "text": "123 Avenue du Froid\n75001 Paris" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

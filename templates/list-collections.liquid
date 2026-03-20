@@ -1,0 +1,28 @@
+{% comment %} List Collections Template {% endcomment %}
+<div class="collections-list-page section-padding">
+  <div class="container">
+    <h1 class="page-title">Nos Collections</h1>
+    <div class="collections-grid">
+      {% for collection in collections %}
+        {% unless collection.handle == 'frontpage' %}
+          <a href="{{ collection.url }}" class="collection-card">
+            <div class="collection-card-image">
+              {% if collection.image %}
+                <img src="{{ collection.image | image_url: width: 600 }}" alt="{{ collection.title }}" loading="lazy">
+              {% else %}
+                <div class="placeholder-bg" style="background: linear-gradient(135deg, var(--color-primary), var(--color-secondary)); height: 200px; display: flex; align-items: center; justify-content: center;">
+                  <span style="font-size: 3rem;">❄️</span>
+                </div>
+              {% endif %}
+            </div>
+            <div class="collection-card-content">
+              <h3>{{ collection.title }}</h3>
+              <p>{{ collection.description | strip_html | truncatewords: 15 }}</p>
+              <span class="collection-link">{{ collection.products_count }} produits →</span>
+            </div>
+          </a>
+        {% endunless %}
+      {% endfor %}
+    </div>
+  </div>
+</div>
