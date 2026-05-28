@@ -1,7 +1,9 @@
 'use client';
 
+import { useRef } from 'react';
 import { ASSETS } from '@/lib/assets';
-import { fmtEUR } from '@/lib/format';
+import { fmtEUR, todayISO } from '@/lib/format';
+import { exportData, importData } from '@/lib/storage';
 import type { Strategy } from '@/lib/vca';
 import { Btn, Card, Field, SectionTitle, inputClass } from './ui';
 
@@ -27,6 +29,31 @@ export function Plan({
   onReset,
 }: PlanProps) {
   const allocSum = Object.values(allocation).reduce((a, b) => a + b, 0);
+  const fileRef = useRef<HTMLInputElement>(null);
+
+  const handleExport = () => {
+    const blob = new Blob([exportData()], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `stackwise-backup-${todayISO()}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const handleImport = (file: File) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const ok = importData(String(reader.result));
+      if (ok) {
+        window.location.reload();
+      } else {
+        window.alert('Fichier de sauvegarde invalide.');
+      }
+    };
+    reader.readAsText(file);
+  };
+
   return (
     <div className="flex flex-col gap-4">
       <Card className="p-5">
@@ -96,10 +123,35 @@ export function Plan({
       </Card>
 
       <Card className="p-5">
-        <SectionTitle>Données</SectionTitle>
+        <SectionTitle>Sauvegarde</SectionTitle>
         <p className="mt-2 mb-3 text-sm text-muted">
-          Tes données sont stockées localement dans ce navigateur. Effacer le cache supprimera tout.
+          Tes données vivent dans ce navigateur. Exporte un fichier de sauvegarde pour ne rien perdre, ou
+          le réimporter sur un autre appareil/navigateur.
         </p>
+        <div className="flex flex-wrap gap-2">
+          <Btn kind="ghost" onClick={handleExport}>
+            ⬇ Exporter une sauvegarde
+          </Btn>
+          <Btn kind="ghost" onClick={() => fileRef.current?.click()}>
+            ⬆ Importer
+          </Btn>
+          <input
+            ref={fileRef}
+            type="file"
+            accept="application/json,.json"
+            className="hidden"
+            onChange={(e) => {
+              const f = e.target.files?.[0];
+              if (f) handleImport(f);
+              e.target.value = '';
+            }}
+          />
+        </div>
+      </Card>
+
+      <Card className="p-5">
+        <SectionTitle>Réinitialiser</SectionTitle>
+        <p className="mt-2 mb-3 text-sm text-muted">Efface toutes tes données de ce navigateur.</p>
         <Btn kind="danger" onClick={onReset}>
           Réinitialiser tout
         </Btn>

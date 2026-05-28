@@ -40,6 +40,43 @@ export function useLocalState<T>(key: string, defaultValue: T): [T, (next: T | (
   return [value, update, hydrated];
 }
 
+/** Sérialise toutes les clés Stackwise en JSON (pour sauvegarde manuelle). */
+export function exportData(): string {
+  const data: Record<string, unknown> = {};
+  try {
+    for (let i = 0; i < window.localStorage.length; i++) {
+      const key = window.localStorage.key(i);
+      if (!key?.startsWith(PREFIX)) continue;
+      const raw = window.localStorage.getItem(key);
+      if (raw === null) continue;
+      try {
+        data[key] = JSON.parse(raw);
+      } catch {
+        data[key] = raw;
+      }
+    }
+  } catch {
+    // ignore
+  }
+  return JSON.stringify({ app: 'stackwise', exportedAt: new Date().toISOString(), data }, null, 2);
+}
+
+/** Restaure les données depuis un JSON produit par exportData(). Retourne true si OK. */
+export function importData(json: string): boolean {
+  try {
+    const parsed = JSON.parse(json) as { data?: Record<string, unknown> };
+    const data = parsed?.data;
+    if (!data || typeof data !== 'object') return false;
+    for (const [key, value] of Object.entries(data)) {
+      if (!key.startsWith(PREFIX)) continue;
+      window.localStorage.setItem(key, JSON.stringify(value));
+    }
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 export function clearStackwiseStorage(): void {
   try {
     const toRemove: string[] = [];

@@ -16,7 +16,7 @@ import {
   YAxis,
 } from 'recharts';
 import { ASSETS } from '@/lib/assets';
-import { fmtEUR, fmtPct, todayISO } from '@/lib/format';
+import { fmtEUR, fmtNum, fmtPct, todayISO } from '@/lib/format';
 import type { VCAOutput } from '@/lib/vca';
 import { Btn, Card, Pill, SectionTitle } from './ui';
 import type { Snapshot } from '@/lib/stackwise-state';
@@ -37,7 +37,7 @@ interface DashboardProps {
   totalInvested: number;
   allocation: Record<string, number>;
   snapshots: Snapshot[];
-  onRecordInvestment: (amount: number) => void;
+  onOpenInvest: () => void;
   onSnapshot: () => void;
 }
 
@@ -48,7 +48,7 @@ export function Dashboard({
   totalInvested,
   allocation,
   snapshots,
-  onRecordInvestment,
+  onOpenInvest,
   onSnapshot,
 }: DashboardProps) {
   const gap = portfolio.totalValue - totalInvested;
@@ -59,11 +59,14 @@ export function Dashboard({
     return (
       <Card className="p-12 text-center">
         <div className="mb-2 text-4xl">📈</div>
-        <h2 className="mb-2 text-xl font-bold">Bienvenue sur Stackwise</h2>
-        <p className="mx-auto max-w-md text-sm leading-relaxed text-muted">
-          Suis tes investissements crypto en DCA ou VCA, avec recommandation automatique du montant à investir.
-          Commence par renseigner tes avoirs dans l&apos;onglet « Mes avoirs ».
+        <h2 className="mb-2 text-xl font-bold">Prêt à empiler</h2>
+        <p className="mx-auto mb-5 max-w-md text-sm leading-relaxed text-muted">
+          Quand tu fais ton versement, clique sur « J&apos;ai investi » : l&apos;app convertit le montant en
+          quantités et les ajoute automatiquement à tes avoirs.
         </p>
+        <Btn kind="accent" onClick={onOpenInvest}>
+          J’ai investi…
+        </Btn>
       </Card>
     );
   }
@@ -189,8 +192,8 @@ export function Dashboard({
           )}
 
           <div className="mt-4 flex flex-wrap gap-2">
-            <Btn kind="accent" onClick={() => onRecordInvestment(reco.recommendedTotal)}>
-              J’ai investi {fmtEUR(reco.recommendedTotal, 2)}
+            <Btn kind="accent" onClick={onOpenInvest}>
+              J’ai investi…
             </Btn>
             <Btn kind="ghost" onClick={onSnapshot}>
               {todayHasSnapshot ? 'Mettre à jour le relevé' : 'Enregistrer un relevé'}
@@ -202,6 +205,57 @@ export function Dashboard({
           </p>
         </div>
       </Card>
+
+      {/* Positions */}
+      {portfolio.lines.some((l) => l.qty > 0 || l.value > 0) && (
+        <Card className="p-5">
+          <SectionTitle>Mes positions</SectionTitle>
+          <div className="mt-3 flex flex-col gap-3.5">
+            {portfolio.lines.map((l) => {
+              const meta = ASSETS[l.sym as keyof typeof ASSETS];
+              const color = meta?.color ?? '#7C6BFF';
+              return (
+                <div key={l.sym}>
+                  <div className="mb-1 flex items-center gap-2.5">
+                    <div
+                      className="grid h-8 w-8 place-items-center rounded-lg text-[10px] font-extrabold"
+                      style={{ background: `${color}22`, color }}
+                    >
+                      {l.sym}
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm font-bold">{meta?.name ?? l.sym}</span>
+                        <span className="text-sm font-extrabold">{fmtEUR(l.value, 2)}</span>
+                      </div>
+                      <div className="flex items-center justify-between text-[11px] text-muted">
+                        <span>
+                          {fmtNum(l.qty, l.qty > 0 && l.qty < 1 ? 6 : 4)} {l.sym}
+                        </span>
+                        <span>
+                          {l.weight.toFixed(0)}% <span className="text-faint">/ cible {l.target}%</span>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  {/* Barre : allocation réelle vs cible */}
+                  <div className="relative ml-[42px] h-1.5 overflow-hidden rounded-full bg-panel2">
+                    <div
+                      className="h-full rounded-full"
+                      style={{ width: `${Math.min(100, l.weight)}%`, background: color }}
+                    />
+                    <div
+                      className="absolute top-[-1px] h-[7px] w-0.5 bg-text/70"
+                      style={{ left: `${Math.min(100, l.target)}%` }}
+                      title={`Cible ${l.target}%`}
+                    />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </Card>
+      )}
 
       {/* Charts */}
       {chartData.length > 0 && (

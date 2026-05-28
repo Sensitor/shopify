@@ -24,7 +24,7 @@ export function weeklyBaseFromMonthly(monthlyBudget: number): number {
   return (monthlyBudget * MONTHS_PER_YEAR) / WEEKS_PER_YEAR;
 }
 
-function splitByAllocation(
+export function splitByAllocation(
   total: number,
   allocation: Record<string, number>,
 ): Record<string, number> {

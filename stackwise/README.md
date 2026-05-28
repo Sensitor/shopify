@@ -5,11 +5,23 @@ Persistance dans le `localStorage` du navigateur, prix live via proxy CoinGecko 
 
 ## Fonctionnalités
 
-- **Dashboard** : valeur totale live, plus/moins-value, donut d'allocation, courbe valeur vs investi, gain/perte par relevé.
+- **Onboarding unique** : tu saisis ta position de départ (quantités + total investi) une seule fois.
+- **Accumulation automatique** : « J'ai investi… » convertit le montant en quantités (montant ÷ prix live)
+  et les ajoute tout seul à tes avoirs — plus besoin de retaper tes quantités.
+- **Dashboard** : valeur totale live, plus/moins-value, donut d'allocation, carte « Mes positions »
+  (quantité, valeur, barre allocation réelle vs cible), courbe valeur vs investi, gain/perte par relevé.
 - **Recommandation VCA/DCA** : montant à investir cette semaine, ventilé par actif, avec messages contextuels.
-- **Mes avoirs** : saisie des quantités détenues, prix live affiché (avec fallback prix manuel).
+- **Mes avoirs** : correction manuelle des quantités, prix live (avec fallback prix manuel).
 - **Plan & Réglages** : stratégie (DCA/VCA), budget mensuel, allocation cible avec sliders.
+- **Sauvegarde** : export/import d'un fichier JSON pour ne rien perdre ou migrer vers un autre navigateur.
 - **Prix live** : refresh auto toutes les 60 s via `/api/prices` (clé CoinGecko jamais exposée au client).
+
+## Persistance
+
+Tout est enregistré automatiquement dans le `localStorage` du navigateur à chaque modification
+(préfixe `sw_`). Quand tu reviens sur l'app, tes données sont rechargées — rien à re-saisir.
+Un navigateur = un jeu de données (pas de synchro PC/mobile automatique : utilise l'export/import,
+ou passe sur une base Supabase mono-user si tu veux la synchro).
 
 ## Installation locale
 

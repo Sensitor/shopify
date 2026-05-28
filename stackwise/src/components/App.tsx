@@ -4,12 +4,15 @@ import { useCallback, useMemo, useState } from 'react';
 import { usePrices } from '@/lib/usePrices';
 import { useStackwise } from '@/lib/stackwise-state';
 import { computeRecommendation, weeklyBaseFromMonthly } from '@/lib/vca';
+import { accrueHoldings, portfolioValue } from '@/lib/portfolio';
 import { todayISO } from '@/lib/format';
 import { clearStackwiseStorage } from '@/lib/storage';
 import { Dashboard } from './Dashboard';
 import { Holdings } from './Holdings';
 import { Plan } from './Plan';
 import { PriceStatusBadge } from './PriceStatusBadge';
+import { InvestModal } from './InvestModal';
+import { Onboarding } from './Onboarding';
 
 type Tab = 'dashboard' | 'holdings' | 'plan';
 
@@ -24,6 +27,7 @@ export function App() {
   const symbols = useMemo(() => Object.keys(sw.allocation), [sw.allocation]);
   const { prices, status, lastFetch, refresh } = usePrices(symbols);
   const [tab, setTab] = useState<Tab>('dashboard');
+  const [showInvest, setShowInvest] = useState(false);
 
   const effectivePrice = useCallback(
     (sym: string): number => prices[sym] ?? sw.manualPrices[sym] ?? 0,
@@ -56,27 +60,49 @@ export function App() {
     [sw.strategy, sw.monthlyBudget, sw.totalInvested, sw.allocation, portfolio.totalValue],
   );
 
+  // Calcule la valeur du portefeuille à partir d'un set de quantités donné.
+  const valueOf = useCallback(
+    (holdings: Record<string, number>) =>
+      portfolioValue(holdings, Object.keys(sw.allocation), effectivePrice),
+    [sw.allocation, effectivePrice],
+  );
+
+  // Investir = ajouter automatiquement les quantités achetées (montant ÷ prix) aux avoirs.
   const recordInvestment = useCallback(
-    (amount: number) => {
-      sw.setTotalInvested((prev) => prev + amount);
+    (total: number, perAsset: Record<string, number>) => {
+      const today = todayISO();
+      const nextHoldings = accrueHoldings(sw.holdings, perAsset, effectivePrice);
+      const nextInvested = sw.totalInvested + total;
+      const nextValue = valueOf(nextHoldings);
+
+      sw.setHoldings(nextHoldings);
+      sw.setTotalInvested(nextInvested);
       sw.setTransactions((prev) => [
         ...prev,
-        { date: todayISO(), amount, note: sw.strategy === 'DCA' ? 'DCA' : 'VCA' },
+        { date: today, amount: total, note: sw.strategy === 'DCA' ? 'DCA' : 'VCA' },
       ]);
       sw.setSnapshots((prev) => {
-        const today = todayISO();
         const without = prev.filter((s) => s.date !== today);
         return [
           ...without,
-          {
-            date: today,
-            invested: sw.totalInvested + amount,
-            value: Math.round(portfolio.totalValue * 100) / 100,
-          },
+          { date: today, invested: nextInvested, value: Math.round(nextValue * 100) / 100 },
         ];
       });
     },
-    [sw, portfolio.totalValue],
+    [sw, effectivePrice, valueOf],
+  );
+
+  const completeOnboarding = useCallback(
+    (holdings: Record<string, number>, totalInvested: number) => {
+      const today = todayISO();
+      sw.setHoldings(holdings);
+      sw.setTotalInvested(totalInvested);
+      sw.setSnapshots([
+        { date: today, invested: totalInvested, value: Math.round(valueOf(holdings) * 100) / 100 },
+      ]);
+      sw.setOnboarded(true);
+    },
+    [sw, valueOf],
   );
 
   const recordSnapshot = useCallback(() => {
@@ -99,6 +125,12 @@ export function App() {
     clearStackwiseStorage();
     if (typeof window !== 'undefined') window.location.reload();
   }, []);
+
+  const needsOnboarding =
+    !sw.onboarded &&
+    sw.totalInvested === 0 &&
+    sw.snapshots.length === 0 &&
+    Object.values(sw.holdings).every((q) => !q);
 
   if (!sw.hydrated) {
     return (
@@ -149,19 +181,30 @@ export function App() {
           ))}
         </nav>
 
-        {tab === 'dashboard' && (
-          <Dashboard
-            strategy={sw.strategy}
-            reco={reco}
-            portfolio={portfolio}
-            totalInvested={sw.totalInvested}
-            allocation={sw.allocation}
-            snapshots={sw.snapshots}
-            onRecordInvestment={recordInvestment}
-            onSnapshot={recordSnapshot}
+        {needsOnboarding ? (
+          <Onboarding
+            symbols={symbols}
+            effectivePrice={effectivePrice}
+            onComplete={completeOnboarding}
+            onSkip={() => sw.setOnboarded(true)}
           />
+        ) : (
+          <>
+            {tab === 'dashboard' && (
+              <Dashboard
+                strategy={sw.strategy}
+                reco={reco}
+                portfolio={portfolio}
+                totalInvested={sw.totalInvested}
+                allocation={sw.allocation}
+                snapshots={sw.snapshots}
+                onOpenInvest={() => setShowInvest(true)}
+                onSnapshot={recordSnapshot}
+              />
+            )}
+          </>
         )}
-        {tab === 'holdings' && (
+        {!needsOnboarding && tab === 'holdings' && (
           <Holdings
             allocation={sw.allocation}
             holdings={sw.holdings}
@@ -173,7 +216,7 @@ export function App() {
             onUpdateManualPrice={(sym, p) => sw.setManualPrices((prev) => ({ ...prev, [sym]: p }))}
           />
         )}
-        {tab === 'plan' && (
+        {!needsOnboarding && tab === 'plan' && (
           <Plan
             strategy={sw.strategy}
             monthlyBudget={sw.monthlyBudget}
@@ -186,6 +229,16 @@ export function App() {
           />
         )}
       </div>
+
+      {showInvest && (
+        <InvestModal
+          defaultTotal={reco.recommendedTotal}
+          allocation={sw.allocation}
+          effectivePrice={effectivePrice}
+          onClose={() => setShowInvest(false)}
+          onConfirm={recordInvestment}
+        />
+      )}
     </div>
   );
 }

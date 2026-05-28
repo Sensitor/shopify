@@ -26,6 +26,7 @@ export interface StackwiseState {
   totalInvested: number;
   transactions: Transaction[];
   snapshots: Snapshot[];
+  onboarded: boolean;
 }
 
 const DEFAULT_HOLDINGS: Record<string, number> = { BTC: 0, INJ: 0, XRP: 0, SOL: 0 };
@@ -39,12 +40,13 @@ export function useStackwise() {
   const [totalInvested, setTotalInvested, hyd6]     = useLocalState<number>('invested', 0);
   const [transactions, setTransactions, hyd7]       = useLocalState<Transaction[]>('txs', []);
   const [snapshots, setSnapshots, hyd8]             = useLocalState<Snapshot[]>('snaps', []);
+  const [onboarded, setOnboarded, hyd9]             = useLocalState<boolean>('onboarded', false);
 
-  const hydrated = hyd1 && hyd2 && hyd3 && hyd4 && hyd5 && hyd6 && hyd7 && hyd8;
+  const hydrated = hyd1 && hyd2 && hyd3 && hyd4 && hyd5 && hyd6 && hyd7 && hyd8 && hyd9;
 
   const state: StackwiseState = useMemo(
-    () => ({ strategy, monthlyBudget, allocation, holdings, manualPrices, totalInvested, transactions, snapshots }),
-    [strategy, monthlyBudget, allocation, holdings, manualPrices, totalInvested, transactions, snapshots],
+    () => ({ strategy, monthlyBudget, allocation, holdings, manualPrices, totalInvested, transactions, snapshots, onboarded }),
+    [strategy, monthlyBudget, allocation, holdings, manualPrices, totalInvested, transactions, snapshots, onboarded],
   );
 
   return {
@@ -58,5 +60,6 @@ export function useStackwise() {
     setTotalInvested,
     setTransactions,
     setSnapshots,
+    setOnboarded,
   };
 }
